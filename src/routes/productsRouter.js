@@ -4,15 +4,20 @@ const {
   findById,
 } = require('../models/productsDB');
 
-const router = express.Router();
+const productsRouter = express.Router();
 
-router.get('/', (_req, res) => {
+productsRouter.get('/', (_req, res) => {
   res.status(200).json(findAll());
 });
 
-router.get('/:id', (req, res) => {
+productsRouter.get('/:id', (req, res) => {
   const { id } = req.params;
   res.status(200).json(findById(id));
 });
 
-module.exports = router;
+productsRouter.post('/', (req, res) => {
+  const { name } = req.body;
+  res.status(200).json(update(name));
+});
+
+module.exports = productsRouter;
