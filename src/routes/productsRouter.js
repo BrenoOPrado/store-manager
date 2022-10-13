@@ -6,6 +6,7 @@ const {
 } = require('../models/productsDB');
 
 const validationId = require('../middlewares/validationProductId');
+const validationName = require('../middlewares/validationName');
 
 const productsRouter = express.Router();
 
@@ -20,7 +21,7 @@ productsRouter.get('/:id', validationId, async (req, res) => {
   res.status(200).json(...productById[0]);
 });
 
-productsRouter.post('/', async (req, res) => {
+productsRouter.post('/', validationName, async (req, res) => {
   const { name } = req.body;
   await insert(name);
   const allProducts = await (await findAll());

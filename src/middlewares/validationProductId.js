@@ -1,6 +1,6 @@
 const { findAll } = require('../models/productsDB');
 
-module.exports = async function ageTalkerValidation(req, res, next) {
+module.exports = async function validationProductId(req, res, next) {
   const { id } = req.params;
   const allProducts = await findAll();
 
