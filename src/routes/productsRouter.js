@@ -24,7 +24,8 @@ productsRouter.post('/', async (req, res) => {
   const { name } = req.body;
   await insert(name);
   const allProducts = await (await findAll());
-  res.status(200).json(await findById(allProducts.length));
+  const productById = await findById(allProducts[0].length);
+  res.status(201).json(...productById[0]);
 });
 
 module.exports = productsRouter;
