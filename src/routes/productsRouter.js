@@ -2,22 +2,29 @@ const express = require('express');
 const {
   findAll,
   findById,
+  insert,
 } = require('../models/productsDB');
+
+const validationId = require('../middlewares/validationProductId');
 
 const productsRouter = express.Router();
 
-productsRouter.get('/', (_req, res) => {
-  res.status(200).json(findAll());
+productsRouter.get('/', async (_req, res) => {
+  const allProducts = await findAll();
+  res.status(200).json(allProducts[0]);
 });
 
-productsRouter.get('/:id', (req, res) => {
+productsRouter.get('/:id', validationId, async (req, res) => {
   const { id } = req.params;
-  res.status(200).json(findById(id));
+  const productById = await findById(id);
+  res.status(200).json(...productById[0]);
 });
 
-productsRouter.post('/', (req, res) => {
+productsRouter.post('/', async (req, res) => {
   const { name } = req.body;
-  res.status(200).json(update(name));
+  await insert(name);
+  const allProducts = await (await findAll());
+  res.status(200).json(await findById(allProducts.length));
 });
 
 module.exports = productsRouter;

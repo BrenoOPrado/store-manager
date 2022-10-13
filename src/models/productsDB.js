@@ -1,13 +1,13 @@
 const conn = require('./db/connection');
 
-const findAll = () => conn.execute('SELECT * FROM products ORDER BY id DESC');
+const findAll = () => conn.execute('SELECT * FROM products ORDER BY id');
 
 const findById = (id) => conn.execute('SELECT * FROM products WHERE id = ?', [id]);
 
-const update = (name) => conn.execute(`UPDATE people SET name = ?`, [name]);
+const insert = (name) => conn.execute('INSERT INTO products (name) VALUES (?)', [name]);
 
 module.exports = {
   findAll,
   findById,
-  update,
+  insert,
 };
