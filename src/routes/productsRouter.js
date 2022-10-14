@@ -5,8 +5,8 @@ const {
   insert,
 } = require('../models/productsDB');
 
-const validationId = require('../middlewares/validationProductId');
-const validationName = require('../middlewares/validationName');
+const validationId = require('../middlewares/products/validationProductId');
+const validationName = require('../middlewares/products/validationName');
 
 const productsRouter = express.Router();
 
