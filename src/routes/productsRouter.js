@@ -2,6 +2,7 @@ const express = require('express');
 const {
   findAll,
   findById,
+  update,
   insert,
 } = require('../models/productsDB');
 
@@ -27,6 +28,14 @@ productsRouter.post('/', validationName, async (req, res) => {
   const allProducts = await (await findAll());
   const productById = await findById(allProducts[0].length);
   res.status(201).json(...productById[0]);
+});
+
+productsRouter.put('/:id', validationName, validationId, async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  const result = { id, name };
+  await update(result);
+  res.status(200).json(result);
 });
 
 module.exports = productsRouter;

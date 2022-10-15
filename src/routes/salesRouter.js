@@ -12,27 +12,21 @@ const {
 const validationProductId = require('../middlewares/sales/validationProductId');
 const validationQuantity = require('../middlewares/sales/validationQuantity');
 const validationSalesId = require('../middlewares/sales/validationSalesId');
-
+// --------------------------------------------------------
 salesRouter.post('/', validationProductId, validationQuantity, async (req, res) => {
   const saleDate = await insertSaleDate();
-  console.log(req.body);
+  
+  const items = req.body;
   const saleInfo = {
-    saleId: saleDate[0].insertId,
-    itemsSold: []
-  };
-  req.body.forEach(async ({ productId, quantity }) => {
-    const newProduct = { productId, quantity }
-    saleInfo.itemsSold.push(newProduct);
-  });
-  console.log(saleInfo);
-  await insertSaleProduct(saleInfo);
-  const result = {
     id: saleDate[0].insertId,
-    itemsSold: saleDate,
+    itemsSold: items,
   };
-  res.status(201).json(result);
-});
 
+  await insertSaleProduct(saleInfo);
+
+  res.status(201).json(saleInfo);
+});
+// --------------------------------------------------------
 salesRouter.get('/', async (_req, res) => {
   const allSales = await findAll();
   res.status(200).json(allSales[0]);
