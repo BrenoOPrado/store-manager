@@ -26,12 +26,10 @@ const findById = (id) => conn
 const insertSaleDate = async () => conn.execute('INSERT INTO sales (date) VALUES (NOW())');
   
 const insertSaleProduct = async (saleInfo) => {
-  const promises = saleInfo.itemsSold.map((item) => {
-    return conn.execute(
+  const promises = saleInfo.itemsSold.map((item) => conn.execute(
       'INSERT INTO sales_products (sale_id, product_id, quantity) VALUES (?, ?, ?)',
       [saleInfo.id, item.productId, item.quantity],
-    );
-  });
+    ));
   await Promise.all(promises);
 };
 

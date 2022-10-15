@@ -2,6 +2,7 @@ const express = require('express');
 const {
   findAll,
   findById,
+  remove,
   update,
   insert,
 } = require('../models/productsDB');
@@ -36,6 +37,12 @@ productsRouter.put('/:id', validationName, validationId, async (req, res) => {
   const result = { id, name };
   await update(result);
   res.status(200).json(result);
+});
+
+productsRouter.delete('/:id', validationId, async (req, res) => {
+  const { id } = req.params;
+  await remove(id);
+  return res.status(204).json();
 });
 
 module.exports = productsRouter;
