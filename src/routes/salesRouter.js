@@ -12,7 +12,7 @@ const {
 const validationProductId = require('../middlewares/sales/validationProductId');
 const validationQuantity = require('../middlewares/sales/validationQuantity');
 const validationSalesId = require('../middlewares/sales/validationSalesId');
-// --------------------------------------------------------
+
 salesRouter.post('/', validationProductId, validationQuantity, async (req, res) => {
   const saleDate = await insertSaleDate();
   
@@ -26,7 +26,7 @@ salesRouter.post('/', validationProductId, validationQuantity, async (req, res) 
 
   res.status(201).json(saleInfo);
 });
-// --------------------------------------------------------
+
 salesRouter.get('/', async (_req, res) => {
   const allSales = await findAll();
   res.status(200).json(allSales[0]);
