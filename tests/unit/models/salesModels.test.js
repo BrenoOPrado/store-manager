@@ -3,7 +3,7 @@ const salesDB = require('../../../src/models/salesDB');
 const conn = require('../../../src/models/db/connection');
 
 describe('Testes de unidade do model de sales', function () {
-  it('Realizando uma operação SELECT de todos os produtos com o model salesDB', async function () {
+  it('Realizando uma operação SELECT de todos as sales_products com o model salesDB', async function () {
     const [result] = await salesDB.findAll();
 
     expect(result.length).toBe(3);
@@ -24,7 +24,7 @@ describe('Testes de unidade do model de sales', function () {
     expect(result[2].saleId).toEqual(2);
   });
 
-  it('Realizando uma operação SELECT de todos os produtos com o model salesDB', async function () {
+  it('Realizando uma operação SELECT de uma das sales_products com o model salesDB', async function () {
     const [result] = await salesDB.findById(1);
 
     expect(result.length).toBe(2);
@@ -44,7 +44,7 @@ describe('Testes de unidade do model de sales', function () {
     expect(result[1].saleId).toEqual(1);
   });
 
-  it('Realizando uma operação SELECT de todos os produtos com o model salesDB', async function () {
+  it('Realizando uma operação INSERT de uma nova sale com o model salesDB', async function () {
     await salesDB.insertSaleDate()
     const [result] = await conn
       .execute(
@@ -62,7 +62,7 @@ describe('Testes de unidade do model de sales', function () {
     }
   });
 
-  it('Realizando uma operação SELECT de todos os produtos com o model salesDB', async function () {
+  it('Realizando uma operação INSERT de uma nova sale_product com o model salesDB', async function () {
     const insertSale = {
       id: 3,
       productId: 4,
