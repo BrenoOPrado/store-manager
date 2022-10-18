@@ -23,7 +23,7 @@ const {
   productsUpdated,
 } = require('./mocks/products');
 
-describe('Testes de unidade do model de sales', function () {
+describe('Testes de unidade do controller de products', function () {
   it('Realizando uma operação de retornar todos os produtos com o controller getAll', async function () {
     const res = {};
     res.status = sinon.stub().returns(res);
