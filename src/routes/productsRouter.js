@@ -8,7 +8,7 @@ const {
   insertProduct,
   updateProduct,
   removeProduct,
-} = require('../controllers/productController')
+} = require('../controllers/productController');
 
 const productsRouter = express.Router();
 

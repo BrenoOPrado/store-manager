@@ -1,4 +1,4 @@
-const { findById } = require('../../models/productsDB');
+const { findById } = require('../../../models/productsDB');
 
 module.exports = async function validationProductId(req, res, next) {
   const { body } = req;
