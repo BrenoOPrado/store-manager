@@ -1,6 +1,5 @@
 const { expect } = require('chai');
 const productsDB = require('../../../src/models/productsDB');
-/* const sinon = require('sinon'); */
 
 const {
   productsGetAll,
@@ -11,12 +10,7 @@ const {
   productsUpdated,
 } = require('./mocks/products');
 
-/* const expectReturn =  */
-
 describe('Testes de unidade do model de produtos', function () {
-  /* beforeEach(() => {
-    sinon.stub(connection, 'execute').resolves([expectReturn]);
-  }); */
 
   it('Realizando uma operação SELECT de todos os produtos com o model productsDB', async function () {
     const [result] = await productsDB.findAll();
@@ -47,8 +41,5 @@ describe('Testes de unidade do model de produtos', function () {
     const [resultById] = await productsDB.findById(1);
     expect(resultById).to.equal(productsUpdated);
   });
-
-  /* afterEach(() => {
-    sinon.restore();
-  }); */
+  
 });
