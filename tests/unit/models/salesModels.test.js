@@ -61,7 +61,7 @@ describe('Testes de unidade do model de sales', function () {
     }
   });
 
-  it('Realizando uma operação INSERT de uma nova sale_product com o model salesDB', async function () {
+  /* it('Realizando uma operação INSERT de uma nova sale_product com o model salesDB', async function () {
     const insertSale = {
       id: 3,
       productId: 4,
@@ -89,7 +89,7 @@ describe('Testes de unidade do model de sales', function () {
       expect(result[i]).to.be.haveOwnProperty("quantity");
       expect(result[i]).to.be.haveOwnProperty("date");
     }
-  });
+  }); */
 
   afterEach(() => {
     sinon.restore();

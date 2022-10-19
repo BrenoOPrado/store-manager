@@ -1,5 +1,6 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
+const connection = require('../../../src/models/db/connection');
 
 describe('Testando products service', function () {
   describe('Validando o name', function () {
@@ -56,7 +57,7 @@ describe('Testando products service', function () {
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
 
-      sinon.stub(productsDB, 'findAll').resolves([mock.productsGetAll, null]);
+      sinon.stub(connection, 'execute').resolves([mock.productsGetAll]);
 
       await validationProductId({ params: { id: '1' } }, res, next);
 
@@ -69,7 +70,7 @@ describe('Testando products service', function () {
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
 
-      sinon.stub(productsDB, 'findAll').resolves([mock.productsGetAll, null]);
+      sinon.stub(connection, 'execute').resolves([mock.productsGetAll]);
 
       await validationProductId({ params: { id: '99999999' } }, res, next);
 
@@ -77,6 +78,10 @@ describe('Testando products service', function () {
       expect(res.json).to.have.been.calledOnceWith({
         message: 'Product not found',
       });
+    });
+
+    afterEach(() => {
+      sinon.restore();
     });
   });
 });
