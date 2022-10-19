@@ -48,7 +48,7 @@ describe('Testando products service', function () {
   describe('Validando o produto', function () {
     const validationProductId = require('../../../src/services/middlewares/products/validationProductId');
     const productsDB = require('../../../src/models/productsDB');
-    const mockFindAll = require('../controllers/mocks/products');
+    const mock = require('../controllers/mocks/products');
 
     it('Caso de sucesso', async function () {
       const next = sinon.stub().returns(() => { })
@@ -56,9 +56,9 @@ describe('Testando products service', function () {
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
 
-      sinon.stub(productsDB, 'findAll').resolves([mockFindAll.productsGetAll, null]);
+      sinon.stub(productsDB, 'findAll').resolves([mock.productsGetAll, null]);
 
-      await validationProductId({ params: { id: 1 } }, res, next);
+      await validationProductId({ params: { id: '1' } }, res, next);
 
       expect(next).to.have.been.calledOnceWith();
     });
@@ -69,9 +69,9 @@ describe('Testando products service', function () {
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
 
-      sinon.stub(productsDB, 'findAll').resolves([mockFindAll.productsGetAll, null]);
+      sinon.stub(productsDB, 'findAll').resolves([mock.productsGetAll, null]);
 
-      await validationProductId({ params: { id: 99999999 } }, res, next);
+      await validationProductId({ params: { id: '99999999' } }, res, next);
 
       expect(res.status).to.have.been.calledOnceWith(404);
       expect(res.json).to.have.been.calledOnceWith({

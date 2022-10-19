@@ -1,5 +1,7 @@
 const { expect } = require('chai');
+const sinon = require('sinon');
 const productsDB = require('../../../src/models/productsDB');
+const connection = require('../../../src/models/db/connection');
 
 const {
   productsGetAll,
@@ -13,9 +15,12 @@ const {
 describe('Testes de unidade do model de produtos', function () {
 
   it('Realizando uma operação SELECT de todos os produtos com o model productsDB', async function () {
-    const [result] = await productsDB.findAll();
+    sinon.stub(connection, 'execute').resolves(productsGetAll);
 
-    expect(result).to.equal(productsGetAll);
+    const result = await productsDB.findAll();
+
+    expect(result).to.be.a('array');
+    expect(result).to.be.deep.eq(productsGetAll);
   });
 
   it('Realizando uma operação SELECT de um dos produtos com o model productsDB', async function () {

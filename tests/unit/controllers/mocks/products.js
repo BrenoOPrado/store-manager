@@ -15,10 +15,10 @@ const productsGetAll = [
 
 // ------------------------------------------------
 
-const productsGetById = {
+const productsGetById = [{
   "id": 1,
   "name": "Martelo de Thor",
-};
+}];
 
 // ------------------------------------------------
 

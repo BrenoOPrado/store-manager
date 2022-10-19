@@ -48,15 +48,15 @@ describe('Testes de unidade do controller de sales', function () {
     expect(res.json).to.have.been.calledOnceWith(salesGetById);
   });
 
-  it('Realizando uma operação de retornar o novo produto adicionado com o controller insertProduct', async function () {
+  it('Realizando uma operação de retornar o novo produto adicionado com o controller insertSale', async function () {
     const res = {};
     res.status = sinon.stub().returns(res);
     res.json = sinon.stub().returns();
 
-    sinon.stub(salesController, 'insertProduct')
+    sinon.stub(salesController, 'insertSale')
       .resolves({ status: 201, message: salesInsert });
 
-    await insertProduct({ params: bodyInsert }, res);
+    await insertSale({ params: bodyInsert }, res);
 
     expect(res.status).to.have.been.calledOnceWith(201);
     expect(res.json).to.have.been.calledOnceWith(salesInsert);

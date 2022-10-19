@@ -60,7 +60,7 @@ describe('Testes de unidade do controller de products', function () {
     sinon.stub(productController, 'insertProduct')
       .resolves({ status: 201, message: productsInsert });
 
-    await insertProduct({ params: bodyInsert }, res);
+    await insertProduct({ body: bodyInsert }, res);
 
     expect(res.status).to.have.been.calledOnceWith(201);
     expect(res.json).to.have.been.calledOnceWith(productsInsert);
@@ -74,7 +74,7 @@ describe('Testes de unidade do controller de products', function () {
     sinon.stub(productController, 'updateProduct')
       .resolves({ status: 200, message: productsUpdated });
 
-    await updateProduct({ params: bodyUpdated }, res);
+    await updateProduct({ body: bodyUpdated, params: { id: 2 } }, res);
 
     expect(res.status).to.have.been.calledOnceWith(200);
     expect(res.json).to.have.been.calledOnceWith(productsUpdated);

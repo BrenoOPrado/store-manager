@@ -6,6 +6,8 @@ const { bodyInsert } = require('../controllers/mocks/sales');
 describe('Testando sales service', function () {
   describe('Validando a quantidade', function () {
     const validationQuantity = require('../../../src/services/middlewares/sales/validationQuantity');
+    const productsDB = require('../../../src/models/productsDB');
+    const mockFindAll = require('../controllers/mocks/products');
 
     it('Caso de sucesso', async function () {
       const next = sinon.stub().returns(() => { })
@@ -24,7 +26,9 @@ describe('Testando sales service', function () {
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
 
-      await validationQuantity({ body: {} }, res, next);
+      before(async () => await sinon.stub(productsDB, 'findAll').resolves([mockFindAll.productsGetAll, null]));
+
+      await validationQuantity({ body: [{}] }, res, next);
 
       expect(res.status).to.have.been.calledOnceWith(400);
       expect(res.json).to.have.been.calledOnceWith({
@@ -45,12 +49,16 @@ describe('Testando sales service', function () {
         message: '"quantity" must be greater than or equal to 1',
       });
     });
+
+    afterEach(() => {
+      sinon.restore();
+    });
   });
 
   describe('Validando o produto', function () {
     const validationProductId = require('../../../src/services/middlewares/sales/validationProductId');
-    const salesDB = require('../../../src/models/salesDB');
-    const mock = require('../controllers/mocks/sales');
+    const productsDB = require('../../../src/models/productsDB');
+    const mock = require('../controllers/mocks/products');
 
     it('Caso de sucesso', async function () {
       const next = sinon.stub().returns(() => { })
@@ -58,7 +66,7 @@ describe('Testando sales service', function () {
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
 
-      sinon.stub(salesDB, 'findById').resolves([mock.salesGetById, null]);
+      sinon.stub(productsDB, 'findById').resolves([mock.productsGetById, null]);
 
       await validationProductId({ body: [{ productId: 1 }] }, res, next);
 
@@ -70,8 +78,6 @@ describe('Testando sales service', function () {
       const res = {};
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
-
-      sinon.stub(salesDB, 'findById').resolves([mock.salesGetById, null]);
 
       await validationProductId({ body: [{ }] }, res, next);
 
@@ -87,7 +93,7 @@ describe('Testando sales service', function () {
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
 
-      sinon.stub(salesDB, 'findById').resolves([mock.salesGetById, null]);
+      async () => await sinon.stub(productsDB, 'findById').resolves([mock.productsGetById, null]);
 
       await validationProductId({ body: [{ productId: 99999999 }] }, res, next);
 
@@ -95,6 +101,10 @@ describe('Testando sales service', function () {
       expect(res.json).to.have.been.calledOnceWith({
         message: 'Product not found',
       });
+    });
+
+    afterEach(() => {
+      sinon.restore();
     });
   });
 
@@ -109,20 +119,20 @@ describe('Testando sales service', function () {
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
 
-      sinon.stub(salesDB, 'findAll').resolves([mock.salesGetAll, null]);
+      before(async () => await sinon.stub(salesDB, 'findAll').resolves([mock.salesGetAll, null]));
 
       await validationSalesId({ params: '1' }, res, next);
 
       expect(next).to.have.been.calledOnceWith();
     });
 
-    it('Caso de quantidade não encontrada', async function () {
+    it('Caso de venda não encontrada', async function () {
       const next = sinon.stub().returns(() => { })
       const res = {};
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
 
-      sinon.stub(salesDB, 'findAll').resolves([mock.salesGetAll, null]);
+      before(async () => await sinon.stub(salesDB, 'findAll').resolves([mock.salesGetAll, null]));
 
       await validationSalesId({ params: '99999999' }, res, next);
 
@@ -130,6 +140,10 @@ describe('Testando sales service', function () {
       expect(res.json).to.have.been.calledOnceWith({
         message: 'Sale not found',
       });
+    });
+
+    afterEach(() => {
+      sinon.restore();
     });
   });
 });
