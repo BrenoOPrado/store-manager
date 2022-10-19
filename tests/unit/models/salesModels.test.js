@@ -1,64 +1,63 @@
 const { expect } = require('chai');
+const sinon = require('sinon');
 const salesDB = require('../../../src/models/salesDB');
-const conn = require('../../../src/models/db/connection');
+const connection = require('../../../src/models/db/connection');
+
+const {
+  salesGetAll,
+  salesGetById,
+} = require('../../mocks/sales');
 
 describe('Testes de unidade do model de sales', function () {
   it('Realizando uma operação SELECT de todos as sales_products com o model salesDB', async function () {
-    const [result] = await salesDB.findAll();
+    sinon.stub(connection, 'execute').resolves(salesGetAll);
+    const result = await salesDB.findAll();
 
-    expect(result.length).toBe(3);
+    expect(result).to.be.length(3);
 
     for (let i = 0; i < result.length; i += 1) {
-      expect(result[i]).toHaveProperty("saleId");
-      expect(result[i]).toHaveProperty("productId");
-      expect(result[i]).toHaveProperty("quantity");
-      expect(result[i]).toHaveProperty("date");
-
-      expect(result[i].productId).toEqual(i + 1);
-      expect(result[i].quantity).toEqual((i + 1) * 5);
-      expect(result[i].date).toBeDefined();
+      expect(result[i]).to.be.haveOwnProperty("saleId");
+      expect(result[i]).to.be.haveOwnProperty("productId");
+      expect(result[i]).to.be.haveOwnProperty("quantity");
+      expect(result[i]).to.be.haveOwnProperty("date");
     }
 
-    expect(result[0].saleId).toEqual(1);
-    expect(result[1].saleId).toEqual(1);
-    expect(result[2].saleId).toEqual(2);
+    expect(result[0].saleId).to.equal(1);
+    expect(result[1].saleId).to.equal(1);
+    expect(result[2].saleId).to.equal(2);
   });
 
   it('Realizando uma operação SELECT de uma das sales_products com o model salesDB', async function () {
-    const [result] = await salesDB.findById(1);
+    sinon.stub(connection, 'execute').resolves(salesGetById);
+    const result = await salesDB.findById(1);
 
-    expect(result.length).toBe(2);
+    expect(result).to.be.length(2);
 
     for (let i = 0; i < result.length; i += 1) {
-      expect(result[i]).toHaveProperty("saleId");
-      expect(result[i]).toHaveProperty("productId");
-      expect(result[i]).toHaveProperty("quantity");
-      expect(result[i]).toHaveProperty("date");
-
-      expect(result[i].productId).toEqual(i + 1);
-      expect(result[i].quantity).toEqual((i + 1) * 5);
-      expect(result[i].date).toBeDefined();
+      expect(result[i]).to.be.haveOwnProperty("productId");
+      expect(result[i]).to.be.haveOwnProperty("quantity");
+      expect(result[i]).to.be.haveOwnProperty("date");
     }
-
-    expect(result[0].saleId).toEqual(1);
-    expect(result[1].saleId).toEqual(1);
   });
 
   it('Realizando uma operação INSERT de uma nova sale com o model salesDB', async function () {
-    await salesDB.insertSaleDate()
-    const [result] = await conn
+    sinon.stub(connection, 'execute').resolves({});
+    await salesDB.insertSaleDate();
+    sinon.restore();
+
+    sinon.stub(connection, 'execute')
+      .resolves([{ id: 1, date: '' }, { id: 2, date: '' }, { id: 3, date: '' }]);
+    const result = await connection
       .execute(
         'SELECT * FROM sales ORDER BY id',
       );
 
-    expect(result.length).toBe(3);
+    expect(result).to.be.length(3);
 
     for (let i = 0; i < result.length; i += 1) {
-      expect(result[i]).toHaveProperty("id");
-      expect(result[i]).toHaveProperty("date");
-
-      expect(result[i].id).toEqual(i + 1);
-      expect(result[i].date).toBeDefined();
+      expect(result[i]).to.be.haveOwnProperty("id");
+      expect(result[i]).to.be.haveOwnProperty("date");
+      expect(result[i].id).to.equal(i + 1);
     }
   });
 
@@ -67,33 +66,32 @@ describe('Testes de unidade do model de sales', function () {
       id: 3,
       productId: 4,
       quantity: 20,
+      date: '',
     };
-    
-    await salesDB.insertSaleProduct(insertSale);
-    const [result] = await conn
-      .execute(
-        `SELECT sale_id AS saleId,
-        product_id AS productId,
-        quantity FROM sales_products
-        ORDER BY sale_id`,
-      );
 
-    expect(result.length).toBe(4);
+    const insertSaleAll = [
+      ...salesGetAll,
+      insertSale,
+    ];
+    
+    sinon.stub(connection, 'execute').resolves({});
+    await salesDB.insertSaleProduct({ itemsSold: insertSale });
+    sinon.restore();
+
+    sinon.stub(connection, 'execute').resolves(insertSaleAll);
+    const result = await salesDB.findAll();
+
+    expect(result).to.be.length(4);
 
     for (let i = 0; i < result.length; i += 1) {
-      expect(result[i]).toHaveProperty("saleId");
-      expect(result[i]).toHaveProperty("productId");
-      expect(result[i]).toHaveProperty("quantity");
-      expect(result[i]).toHaveProperty("date");
-
-      expect(result[i].productId).toEqual(i + 1);
-      expect(result[i].quantity).toEqual((i + 1) * 5);
-      expect(result[i].date).toBeDefined();
+      expect(result[i]).to.be.haveOwnProperty("saleId");
+      expect(result[i]).to.be.haveOwnProperty("productId");
+      expect(result[i]).to.be.haveOwnProperty("quantity");
+      expect(result[i]).to.be.haveOwnProperty("date");
     }
+  });
 
-    expect(result[0].saleId).toEqual(1);
-    expect(result[1].saleId).toEqual(1);
-    expect(result[2].saleId).toEqual(2);
-    expect(result[3].saleId).toEqual(3);
+  afterEach(() => {
+    sinon.restore();
   });
 });

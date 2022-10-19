@@ -2,17 +2,16 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const chai = require('chai');
 const sinonChai = require('sinon-chai');
-
 chai.use(sinonChai);
+const connection = require('../../../src/models/db/connection');
 
-const productController = require('../../../src/controllers/productController');
 const {
   getAll,
   getById,
   insertProduct,
   updateProduct,
   removeProduct,
-} = productController;
+} = require('../../../src/controllers/productController');
 
 const {
   productsGetAll,
@@ -29,8 +28,7 @@ describe('Testes de unidade do controller de products', function () {
     res.status = sinon.stub().returns(res);
     res.json = sinon.stub().returns();
 
-    sinon.stub(productController, 'getAll')
-      .resolves({ status: 200, message: productsGetAll });
+    sinon.stub(connection, 'execute').resolves([productsGetAll]);
 
     await getAll({}, res);
 
@@ -43,8 +41,7 @@ describe('Testes de unidade do controller de products', function () {
     res.status = sinon.stub().returns(res);
     res.json = sinon.stub().returns();
 
-    sinon.stub(productController, 'getById')
-      .resolves({ status: 200, message: productsGetById });
+    sinon.stub(connection, 'execute').resolves([[productsGetById]]);
 
     await getById({ params: { id: 1 } }, res);
 
@@ -57,8 +54,7 @@ describe('Testes de unidade do controller de products', function () {
     res.status = sinon.stub().returns(res);
     res.json = sinon.stub().returns();
 
-    sinon.stub(productController, 'insertProduct')
-      .resolves({ status: 201, message: productsInsert });
+    sinon.stub(connection, 'execute').resolves([[productsInsert]]);
 
     await insertProduct({ body: bodyInsert }, res);
 
@@ -71,10 +67,9 @@ describe('Testes de unidade do controller de products', function () {
     res.status = sinon.stub().returns(res);
     res.json = sinon.stub().returns();
 
-    sinon.stub(productController, 'updateProduct')
-      .resolves({ status: 200, message: productsUpdated });
+    sinon.stub(connection, 'execute').resolves({});
 
-    await updateProduct({ body: bodyUpdated, params: { id: 2 } }, res);
+    await updateProduct({ body: bodyUpdated, params: { id: 1 } }, res);
 
     expect(res.status).to.have.been.calledOnceWith(200);
     expect(res.json).to.have.been.calledOnceWith(productsUpdated);
@@ -85,12 +80,15 @@ describe('Testes de unidade do controller de products', function () {
     res.status = sinon.stub().returns(res);
     res.json = sinon.stub().returns();
 
-    sinon.stub(productController, 'removeProduct')
-      .resolves({ status: 204 });
+    sinon.stub(connection, 'execute').resolves({});
 
-    await removeProduct({ params: { id: 2 } }, res);
+    await removeProduct({ params: { id: 1 } }, res);
 
     expect(res.status).to.have.been.calledOnceWith(204);
     expect(res.json).to.have.been.calledOnceWith();
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 });

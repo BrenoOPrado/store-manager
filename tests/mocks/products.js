@@ -15,10 +15,10 @@ const productsGetAll = [
 
 // ------------------------------------------------
 
-const productsGetById = {
+const productsGetById = [{
   "id": 1,
   "name": "Martelo de Thor",
-};
+}];
 
 // ------------------------------------------------
 
@@ -30,6 +30,25 @@ const productsInsert = {
   "id": 4,
   "name": "exemplo de teste",
 };
+
+const getAllInserted = [
+  {
+    "id": 1,
+    "name": "Martelo de Thor",
+  },
+  {
+    "id": 2,
+    "name": "Traje de encolhimento",
+  },
+  {
+    "id": 3,
+    "name": "Escudo do Capitão América",
+  },
+  {
+    "id": 4,
+    "name": "exemplo de teste",
+  },
+];
 
 // ------------------------------------------------
 
@@ -47,6 +66,7 @@ module.exports = {
   productsGetById,
   bodyInsert,
   productsInsert,
+  getAllInserted,
   bodyUpdated,
   productsUpdated,
 };

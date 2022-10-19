@@ -7,10 +7,10 @@ const {
   productsGetAll,
   productsGetById,
   bodyInsert,
-  productsInsert,
+  getAllInserted,
   bodyUpdated,
   productsUpdated,
-} = require('./mocks/products');
+} = require('../../mocks/products');
 
 describe('Testes de unidade do model de produtos', function () {
 
@@ -19,32 +19,41 @@ describe('Testes de unidade do model de produtos', function () {
 
     const result = await productsDB.findAll();
 
-    expect(result).to.be.a('array');
-    expect(result).to.be.deep.eq(productsGetAll);
+    expect(result).to.equal(productsGetAll);
   });
 
   it('Realizando uma operação SELECT de um dos produtos com o model productsDB', async function () {
-    const [result] = await productsDB.findById(1);
+    sinon.stub(connection, 'execute').resolves(productsGetById);
+
+    const result = await productsDB.findById(1);
 
     expect(result).to.equal(productsGetById);
   });
 
   it('Realizando uma operação INSERT de um novo produto com o model productsDB', async function () {
+    sinon.stub(connection, 'execute').resolves({});
     await productsDB.insert(bodyInsert.name);
-    const [allResult] = await productsDB.findAll();
+    sinon.restore();
+
+    sinon.stub(connection, 'execute').resolves(getAllInserted);
+    const allResult = await productsDB.findAll();
 
     expect(allResult).to.be.length(4);
-
-    const [resultById] = await productsDB.findById(4);
-    expect(resultById).to.equal(productsInsert);
   });
 
   it('Realizando uma operação UPDATE em um dos produtos com o model productsDB', async function () {
+    sinon.stub(connection, 'execute').resolves({});
     const updateParam = { name: bodyUpdated.name, id: 1 };
     await productsDB.update(updateParam);
+    sinon.restore();
 
-    const [resultById] = await productsDB.findById(1);
+    sinon.stub(connection, 'execute').resolves(productsUpdated);
+    const resultById = await productsDB.findById(1);
     expect(resultById).to.equal(productsUpdated);
   });
   
+  afterEach(() => {
+    sinon.restore();
+  });
+
 });

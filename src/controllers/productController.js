@@ -20,7 +20,7 @@ const getById = async (req, res) => {
 const insertProduct = async (req, res) => {
   const { name } = req.body;
   await insert(name);
-  const allProducts = await (await findAll());
+  const allProducts = await findAll();
   const productById = await findById(allProducts[0].length);
   res.status(201).json(...productById[0]);
 };

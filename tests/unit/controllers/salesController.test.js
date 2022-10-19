@@ -1,16 +1,15 @@
 const { expect } = require('chai');
-const sinon = require('sinon');
 const chai = require('chai');
+const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
-
 chai.use(sinonChai);
+const connection = require('../../../src/models/db/connection');
 
-const salesController = require('../../../src/controllers/salesController');
 const {
   getAll,
   getById,
   insertSale,
-} = salesController;
+} = require('../../../src/controllers/salesController');
 
 const {
   salesGetAll,
@@ -25,9 +24,7 @@ describe('Testes de unidade do controller de sales', function () {
     res.status = sinon.stub().returns(res);
     res.json = sinon.stub().returns();
 
-    sinon.stub(salesController, 'getAll')
-      .resolves({ status: 200, message: salesGetAll });
-
+    sinon.stub(connection, 'execute').resolves([salesGetAll]);
     await getAll({}, res);
 
     expect(res.status).to.have.been.calledOnceWith(200);
@@ -39,8 +36,7 @@ describe('Testes de unidade do controller de sales', function () {
     res.status = sinon.stub().returns(res);
     res.json = sinon.stub().returns();
 
-    sinon.stub(salesController, 'getById')
-      .resolves({ status: 200, message: salesGetById });
+    sinon.stub(connection, 'execute').resolves([salesGetById]);
 
     await getById({ params: { id: 1 } }, res);
 
@@ -53,12 +49,14 @@ describe('Testes de unidade do controller de sales', function () {
     res.status = sinon.stub().returns(res);
     res.json = sinon.stub().returns();
 
-    sinon.stub(salesController, 'insertSale')
-      .resolves({ status: 201, message: salesInsert });
-
+    sinon.stub(connection, 'execute').resolves([{ insertId: 3 }]);
     await insertSale({ params: bodyInsert }, res);
 
     expect(res.status).to.have.been.calledOnceWith(201);
     expect(res.json).to.have.been.calledOnceWith(salesInsert);
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 });
